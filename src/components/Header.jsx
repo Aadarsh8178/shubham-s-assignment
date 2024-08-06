@@ -20,7 +20,6 @@ function Header({ month, year, setMonth, setYear }) {
     const handlePrevMonth = () => {
         if(month - 1 < 0){
             setMonth(11)
-            console.log({ year, prevYear: year-1});
             setYear(year - 1)
         } else {
             setMonth(month - 1)
@@ -30,7 +29,6 @@ function Header({ month, year, setMonth, setYear }) {
     const handleNextMonth = () => {
         if(month + 1 > 11){
             setMonth(0)
-            console.log({ year, nextYear: year+1});
             setYear(year + 1)
         } else {
             setMonth(month + 1)

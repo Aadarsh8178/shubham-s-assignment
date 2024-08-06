@@ -2,8 +2,9 @@ import { useDrop } from "react-dnd";
 import Event from "./Event";
 import { ItemTypes } from "../constants";
 import { useRef } from "react";
+import { isInsideMonth, resolveTimeStamp } from "../utils";
 
-function DroppableGrid({ length, width, events, addEvent, setEvents }) {
+function DroppableGrid({ length, width, events, addEvent, setEvents, month, year }) {
 
     const containerLeft = useRef(0);
     const containerTop = useRef(0);
@@ -14,13 +15,16 @@ function DroppableGrid({ length, width, events, addEvent, setEvents }) {
         const left = Math.round(event.x + delta.x);
         const top = Math.round(event.y + delta.y);
 
+        const {startTime, endTime} = resolveTimeStamp({ x: left,y: top, month, year, eventWidth: 100 })
         setEvents(p => {
             const newEvents = p.map(event => {
                 if(event.id === item.id){
                     return {
                         ...event,
                         x: left,
-                        y: top
+                        y: top,
+                        startTime,
+                        endTime
                     }
                 }
                 return event
@@ -51,9 +55,9 @@ function DroppableGrid({ length, width, events, addEvent, setEvents }) {
             }
         }} className="grid relative" style={{ gridTemplateColumns: `repeat(${width}, 1fr)` }}>
             {Array(width * length).fill(0).map(_ => (
-                <div className="h-12 w-20 border" onDoubleClick={(event) => addEvent(event.clientX - containerLeft.current, event.clientY - containerTop.current)}></div>
+                <div className="border" style={{ height: "60px", width: "100px"}} onDoubleClick={(event) => addEvent(event.clientX - containerLeft.current, event.clientY - containerTop.current)}></div>
             ))}
-            {events.map(event => (
+            {events.filter((event) => isInsideMonth(event, month, year)).map(event => (
                 <Event key={event.id} event={event} deleteEvent={deleteEvent}/>
             ))}
         </div>

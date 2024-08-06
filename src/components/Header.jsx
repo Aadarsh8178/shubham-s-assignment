@@ -16,7 +16,7 @@ const months = [
     "December",
   ];
 
-function Header({ month, year, setMonth, setYear }) {
+function Header({ month, year, setMonth, setYear, handleDateFocus }) {
     const handlePrevMonth = () => {
         if(month - 1 < 0){
             setMonth(11)
@@ -39,7 +39,7 @@ function Header({ month, year, setMonth, setYear }) {
         <p className="text-2xl text-blue-500">{months[month]} {year}</p>
         <div className="flex items-center">
             <ChevronLeftIcon className="cursor-pointer" onClick={handlePrevMonth}/>
-            <p className="text-blue-500 select-none cursor-pointer"> Today </p>
+            <p className="text-blue-500 select-none cursor-pointer" onClick={handleDateFocus}> Today </p>
             <ChevronRightIcon className="cursor-pointer" onClick={handleNextMonth}/>
         </div>
     </div>;

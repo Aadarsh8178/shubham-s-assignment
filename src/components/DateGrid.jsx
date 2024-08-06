@@ -9,6 +9,7 @@ const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
 function DateGrid({ month, year }) {
     const currentDate = new Date();
+    const dayTimeStamp = currentDate.setUTCHours(0,0,0,0);
     const numberOfDays = new Date(year, month,0).getDate();
     const date = new Date(year, month, 1);
     const dayOfWeek = date.getDay();
@@ -53,6 +54,10 @@ function DateGrid({ month, year }) {
         setEvents(newEvents)
     }
 
+    const checkIfCurrentDay = (index) => {
+        return currentDate.getDate() === index+1 && month === currentDate.getMonth() && year === currentDate.getFullYear()
+    }
+
     return <div className="flex w-100 border">
         <div className="min-w-32">
             <div className="w-full border" style={{ height: "40px"}}></div>
@@ -63,8 +68,8 @@ function DateGrid({ month, year }) {
         <div className="flex-grow overflow-x-auto">
             <div className="grid" style={{ gridTemplateColumns: `repeat(${numberOfDays}, 1fr)` }}>
                 {Array(numberOfDays).fill(0).map((_,index) => (
-                    <div className="border p-1" style={{ height: "40px", width: "100px"}}>
-                        <p className={`text-sm inline ${currentDate.getDate() === index+1 && month === currentDate.getMonth() && year === currentDate.getFullYear() ? "rounded-full bg-blue-500 text-white p-1 px-2" : ""}`}>{index+1} {days[(dayOfWeek + index) % 7]}</p>
+                    <div className="border p-1" style={{ height: "40px", width: "100px"}} id={checkIfCurrentDay(index) ? dayTimeStamp: ''}>
+                        <p className={`text-sm inline ${checkIfCurrentDay(index) ? "rounded-full bg-blue-500 text-white p-1 px-2" : ""}`}>{index+1} {days[(dayOfWeek + index) % 7]}</p>
                     </div>
                 ))}
             </div>

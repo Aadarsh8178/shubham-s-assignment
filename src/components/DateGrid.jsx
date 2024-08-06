@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import DroppableGrid from "./DroppableGrid";
+import { getRandomColor } from "../utils";
 
 const resources = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S"];
 const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -11,21 +12,38 @@ function DateGrid({ month, year }) {
     const numberOfDays = new Date(year, month,0).getDate();
     const date = new Date(year, month, 1);
     const dayOfWeek = date.getDay();
+    const lastEventId = useRef(1);
 
-    const [events, setEvents] = useState([{ id: 0,color: "rgba(226,0,0,0.5)", name: "Event 1", startTime: "12 AM", endTime: "12 PM", x: 20, y: 50}]);
+    const [events, _setEvents] = useState([{ id: 0,color: "rgba(226,0,0,0.5)", name: "Event 1", startTime: "12 AM", endTime: "12 PM", x: 20, y: 50}]);
+
+    useEffect(() => {
+        const savedEvents = localStorage.getItem("events");
+        lastEventId.current = JSON.parse(localStorage.getItem("lastEventId") || "1");
+        console.log({ savedEvents});
+        if(savedEvents) {
+            setEvents(JSON.parse(savedEvents));
+        }
+    },[])
+
+    const setEvents = (newEvents) => {
+        newEvents && localStorage.setItem("events", JSON.stringify(newEvents));
+        _setEvents(newEvents);
+    }
 
     const addEvent = (x, y) => {
         const newEvents = [...events];
+        lastEventId.current = lastEventId.current + 1;
+
         newEvents.push({
-            id: events.length,
+            id: lastEventId.current,
             name: `Event ${events.length}`,
-            color: "grey",
+            color: getRandomColor(),
             startTime: "1pm",
             endTime: "2pm",
             x,
             y
         })
-
+        localStorage.setItem("lastEventId", JSON.stringify(lastEventId.current))
         setEvents(newEvents)
     }
 

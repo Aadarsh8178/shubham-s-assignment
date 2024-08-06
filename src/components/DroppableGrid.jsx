@@ -37,6 +37,10 @@ function DroppableGrid({ length, width, events, addEvent, setEvents }) {
         }),
     })
 
+    const deleteEvent = (eventId) => {
+        setEvents(events.filter(event => event.id !== eventId));
+    }
+
     return (
         <div ref={(ref) => {
             drop(ref);
@@ -50,7 +54,7 @@ function DroppableGrid({ length, width, events, addEvent, setEvents }) {
                 <div className="h-12 w-20 border" onDoubleClick={(event) => addEvent(event.clientX - containerLeft.current, event.clientY - containerTop.current)}></div>
             ))}
             {events.map(event => (
-                <Event key={event.id} event={event}/>
+                <Event key={event.id} event={event} deleteEvent={deleteEvent}/>
             ))}
         </div>
     );
